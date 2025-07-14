@@ -1,0 +1,119 @@
+#version: '3.9'
+
+services:
+  vote:
+    build:
+      context: ./vote
+    container_name: vote
+    env_file:
+      - ./vote/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - voting-net
+    healthcheck:
+      disable: true
+      #test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #interval: 10s
+      #timeout: 5s
+      #retries: 5
+
+  worker:
+    build:
+      context: ./worker
+    container_name: worker
+    env_file:
+      - ./worker/.env
+    ports:
+    - "3000:3000"  # Opcional, solo si quieres ver /metrics o /healthz desde host
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - voting-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  result:
+    build:
+      context: ./result
+    container_name: result
+    env_file:
+      - ./result/.env
+    ports:
+      - "3010:3010"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - voting-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3010/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:7
+    container_name: redis
+    networks:
+      - voting-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    env_file:
+      - ./postgres/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - voting-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/vote.conf:ro
+    depends_on:
+      - vote
+ 
+    command: /bin/sh -c "rm -f /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - voting-net
+
+volumes:
+  postgres_data:
+
+networks:
+  voting-net:
+    driver: bridge
