@@ -18,11 +18,7 @@ services:
       - voting-net
     healthcheck:
       disable: true
-      #test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #interval: 10s
-      #timeout: 5s
-      #retries: 5
-
+      
   worker:
     build:
       context: ./worker
@@ -30,7 +26,7 @@ services:
     env_file:
       - ./worker/.env
     ports:
-    - "3000:3000"  # Opcional, solo si quieres ver /metrics o /healthz desde host
+    - "3000:3000"  
     depends_on:
       redis:
         condition: service_healthy
