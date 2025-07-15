@@ -20,26 +20,38 @@ jobs:
           coverage run -m unittest tests/test_app.py
           coverage report
           coverage xml
-
+        
+      - name: Cargar cobertura Vote
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-vote
+          path: ./vote/coverage.xml
+      
       # Worker - Unit test
       - name: Worker - Prueba Unitaria & Cobertura
         working-directory: ./worker
         run: |
           npm ci
-          npm test -- --coverage
+          npm test -- --coverage --coverageReporters=lcov
 
+      - name: Cargar cobertura Worker
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-worker
+          path: ./worker/coverage/lcov-report
+      
       # Result - Unit test
       - name: Result - Prueba Unitaria & Cobertura
         working-directory: ./result
         run: |
           npm ci
-          npm test -- --coverage
+          npm test -- --coverage --coverageReporters=lcov
       
       - name: Cargar cobertura Result
         uses: actions/upload-artifact@v4
         with:
           name: cobertura-result
-          path: ./result/coverage
+          path: ./result/coverage/lcov-report
 
       # Integration tests
       #- name: Integration tests
