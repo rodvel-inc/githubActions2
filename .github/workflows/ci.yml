@@ -65,7 +65,13 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
       
       - name: Ejecutar Docker Compose
-        run: docker compose -f docker-compose.yml up -d --wait
+        #run: docker compose -f docker-compose.yml up -d --wait
+        run: docker compose -f docker-compose.yml up -d
+      
+      - name: Esperar a que los servicios estén listos
+        run: |
+          chmod +x ./scripts/wait-for-services.sh
+          ./scripts/wait-for-services.sh
 
       - name: Verificar estado de servicios (formato JSON)
         run: |
