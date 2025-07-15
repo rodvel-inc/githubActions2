@@ -17,7 +17,7 @@ jobs:
         working-directory: ./vote
         run: |
           pip install coverage
-          coverage run -m unittest tests/test_app.py
+          coverage run --source=vote -m unittest tests/test_app.py
           coverage report
           coverage xml
         
