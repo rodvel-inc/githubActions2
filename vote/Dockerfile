@@ -29,6 +29,5 @@ RUN touch /opt/roxs_voting_app/logs/vote.log && \
 EXPOSE 8080
 
 # Entrypoint
-CMD [".venv/bin/flask", "run", "--host=0.0.0.0", "--port=8080"]
-
+CMD [".venv/bin/flask", "run", "--host=0.0.0.0", "--port=8080", "--no-reload"]
 
