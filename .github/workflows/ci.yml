@@ -73,10 +73,10 @@ jobs:
           chmod +x ./scripts/wait-for-services.sh
           ./scripts/wait-for-services.sh
 
-      - name: Verificar estado de servicios (formato JSON)
-        run: |
-          echo "Estado de los servicios:"
-          docker compose ps --format json | jq .
+      #- name: Verificar estado de servicios (formato JSON)
+      #  run: |
+      #    echo "Estado de los servicios:"
+      #    docker compose ps --format json | jq .
 
       - name: Asegurar permisos del script de integración
         run: chmod +x ./scripts/integrationTest.sh
