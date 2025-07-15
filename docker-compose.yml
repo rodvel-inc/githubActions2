@@ -8,7 +8,7 @@ services:
     env_file:
       - ./vote/.env
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       redis:
         condition: service_healthy
@@ -17,7 +17,10 @@ services:
     networks:
       - voting-net
     healthcheck:
-      disable: true
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
       
   worker:
     build:
