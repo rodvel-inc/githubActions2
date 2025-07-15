@@ -8,7 +8,7 @@ services:
     env_file:
       - ./vote/.env
     ports:
-      - "8080:80"
+      - "8080:80" #Host:container
     depends_on:
       redis:
         condition: service_healthy
@@ -21,6 +21,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 40s
       
   worker:
     build:
@@ -42,6 +43,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 40s
 
   result:
     build:
@@ -61,6 +63,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 40s
   redis:
     image: redis:7
     container_name: redis
