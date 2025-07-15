@@ -6,7 +6,7 @@
   "author": "roxsross",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint *.js",
     "start": "node main.js"
   },

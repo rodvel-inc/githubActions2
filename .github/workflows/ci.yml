@@ -13,23 +13,33 @@ jobs:
         uses: actions/checkout@v4
 
       # Vote - Unit test
-      - name: Vote - Unit test
+      - name: Vote - Prueba Unitaria & Cobertura
         working-directory: ./vote
-        run: python3 tests/test_app.py
+        run: |
+          pip install coverage
+          coverage run -m unittest tests/test_app.py
+          coverage report
+          coverage xml
 
       # Worker - Unit test
-      - name: Worker - Unit test
+      - name: Worker - Prueba Unitaria & Cobertura
         working-directory: ./worker
         run: |
           npm ci
-          npm test
+          npm test -- --coverage
 
       # Result - Unit test
-      - name: Result - Unit test
+      - name: Result - Prueba Unitaria & Cobertura
         working-directory: ./result
         run: |
           npm ci
-          npm test
+          npm test -- --coverage
+      
+      - name: Cargar cobertura Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-result
+          path: ./result/coverage
 
       # Integration tests
       #- name: Integration tests

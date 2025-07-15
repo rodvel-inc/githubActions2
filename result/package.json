@@ -6,7 +6,7 @@
   "author": "roxsross",
   "license": "MIT",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit",
+    "test": "jest --coverage --detectOpenHandles --forceExit", 
     "start": "node main.js",
     "server": "nodemon --env-file=.env main.js"
   },
