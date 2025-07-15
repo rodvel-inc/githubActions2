@@ -4,11 +4,10 @@ ENV NODE_ENV=production
 
 WORKDIR /opt/roxs_voting_app/worker
 
-COPY worker/package.json ./ 
+COPY package.json ./ 
 RUN npm install --omit=dev
 
-#COPY . ./ 
-COPY worker/ ./
+COPY . .
 EXPOSE 3000
 
 CMD ["npm", "start"]

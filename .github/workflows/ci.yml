@@ -1,0 +1,36 @@
+name: CI - Test and Build
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # Vote - Unit test
+      - name: Vote - Unit test
+        working-directory: ./vote
+        run: python3 tests/test_app.py
+
+      # Worker - Unit test
+      - name: Worker - Unit test
+        working-directory: ./worker
+        run: |
+          npm ci
+          npm test
+
+      # Result - Unit test
+      - name: Result - Unit test
+        working-directory: ./result
+        run: |
+          npm ci
+          npm test
+
+      # Integration tests
+      #- name: Integration tests
+      #  run: ./scripts/test-integration.sh
