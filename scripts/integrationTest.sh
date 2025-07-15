@@ -1,16 +1,22 @@
 #!/bin/bash
+
 set -e
 
-docker compose -f docker-compose.test.yml up -d redis postgres
-sleep 5
+echo "🧪 Iniciando pruebas de integración..."
 
-docker compose -f docker-compose.test.yml up -d vote result
-sleep 10
+# 1. Nginx -> Vote
+echo "🔁 Verificando conexión de NGINX -> VOTE (http://localhost)..."
+curl -s -f http://localhost | grep -i "voting" && echo "✅ NGINX puede acceder a VOTE" || (echo "❌ Falla NGINX -> VOTE" && exit 1)
 
-echo "🔍 Checking vote service..."
-curl -f http://localhost:5000/health
+# 2. Vote -> Redis
+echo "📨 Enviando voto de prueba a VOTE (http://localhost/vote)..."
+curl -s -X POST -d "vote=a" http://localhost/vote || (echo "❌ Falla al votar desde VOTE" && exit 1)
 
-echo "🔍 Checking result service..."
-curl -f http://localhost:5001/health
+echo "⏳ Esperando procesamiento por parte de WORKER..."
+sleep 5  # Esperar a que el worker consuma de Redis y escriba en Postgres
 
-docker compose -f docker-compose.test.yml down
+# 3. Result -> Postgres
+echo "📊 Verificando si RESULT puede leer los votos desde POSTGRES..."
+curl -s -f http://localhost:3010 | grep -i "results" && echo "✅ RESULT muestra resultados" || (echo "❌ Falla RESULT -> POSTGRES" && exit 1)
+
+echo "🎉 Todas las pruebas de integración pasaron exitosamente."

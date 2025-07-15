@@ -53,6 +53,32 @@ jobs:
           name: cobertura-result
           path: ./result/coverage/lcov-report
 
-      # Integration tests
-      #- name: Integration tests
-      #  run: ./scripts/test-integration.sh
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: test-and-build
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Instalar jq para formatear JSON
+        run: sudo apt-get update && sudo apt-get install -y jq
+      
+      - name: Ejecutar Docker Compose
+        run: docker compose -f docker-compose.yml up -d --wait
+
+      - name: Verificar estado de servicios (formato JSON)
+        run: |
+          echo "Estado de los servicios:"
+          docker compose ps --format json | jq .
+
+      - name: Asegurar permisos del script de integración
+        run: chmod +x ./scripts/integrationTest.sh
+      
+      - name: Ejecutar pruebas de integración
+        run: ./scripts/integrationTest.sh
+
+      - name: Tear down
+        if: always()
+        run: docker compose down
+
