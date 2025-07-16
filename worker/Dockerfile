@@ -8,7 +8,7 @@ COPY package.json ./
 RUN npm install --omit=dev
 
 # Instalar curl para healthcheck
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl && rm -rf /var/cache/apk/*
 
 COPY . .
 EXPOSE 3000
