@@ -20,6 +20,9 @@ RUN .venv/bin/pip install --upgrade pip
 # Instalar dependencias
 RUN .venv/bin/pip install -r requirements.txt
 
+# Instalar curl para healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Crear archivos de log si se necesitan (vacíos inicialmente)
 RUN mkdir -p /opt/roxs_voting_app/logs
 RUN touch /opt/roxs_voting_app/logs/vote.log && \
@@ -29,5 +32,5 @@ RUN touch /opt/roxs_voting_app/logs/vote.log && \
 EXPOSE 8080
 
 # Entrypoint
-CMD [".venv/bin/flask", "run", "--host=0.0.0.0", "--port=8080", "--no-reload"]
+CMD [".venv/bin/flask", "run", "--host=0.0.0.0", "--port=80", "--no-reload"]
 

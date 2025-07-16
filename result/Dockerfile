@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instalar dependencias de producción solamente
 RUN npm install --only=production
 
+# Instalar curl para healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Copiar el resto de los archivos fuente de la app result
 COPY . .
 
