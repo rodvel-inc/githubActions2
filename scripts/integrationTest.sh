@@ -10,7 +10,7 @@ curl -s -f http://localhost | grep -i "voting" && echo "✅ NGINX puede acceder 
 
 # 2. Vote -> Redis
 echo "📨 Enviando voto de prueba a VOTE (http://localhost/vote)..."
-curl -s -X POST -d "vote=a" http://localhost/  || (echo "❌ Falla al votar desde VOTE" && exit 1)
+curl -s -o /dev/null -X POST -d "vote=a" http://localhost/  || (echo "❌ Falla al votar desde VOTE" && exit 1)
 
 echo "⏳ Esperando procesamiento por parte de WORKER..."
 sleep 5  # Esperar a que el worker consuma de Redis y escriba en Postgres
