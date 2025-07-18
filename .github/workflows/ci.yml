@@ -98,15 +98,15 @@ jobs:
 
       - name: Build & Push Vote image (latest)
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/vote:latest -f Dockerfile.vote.test ./vote
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/vote:latest -f vote/Dockerfile.vote.test ./vote
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/vote:latest
 
       - name: Build & Push Worker image (latest)
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest -f Dockerfile.worker.test ./worker
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest -f worker/Dockerfile.worker.test ./worker
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest
 
       - name: Build & Push Result image (latest)
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/result:latest -f Dockerfile.result.test ./result
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/result:latest -f result/Dockerfile.result.test ./result
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/result:latest
