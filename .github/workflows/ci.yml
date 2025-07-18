@@ -65,18 +65,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
       
       - name: Ejecutar Docker Compose
-        #run: docker compose -f docker-compose.yml up -d --wait
         run: docker compose -f docker-compose.yml up -d
       
       - name: Esperar a que los servicios estén listos
         run: |
           chmod +x ./scripts/wait-for-services.sh
           ./scripts/wait-for-services.sh
-
-      #- name: Verificar estado de servicios (formato JSON)
-      #  run: |
-      #    echo "Estado de los servicios:"
-      #    docker compose ps --format json | jq .
 
       - name: Asegurar permisos del script de integración
         run: chmod +x ./scripts/integrationTest.sh
@@ -88,3 +82,31 @@ jobs:
         if: always()
         run: docker compose down
 
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    needs: integration-tests
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push Vote image (latest)
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/vote:latest -f Dockerfile.vote.test ./vote
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/vote:latest
+
+      - name: Build & Push Worker image (latest)
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest -f Dockerfile.worker.test ./worker
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest
+
+      - name: Build & Push Result image (latest)
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/result:latest -f Dockerfile.result.test ./result
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/result:latest
