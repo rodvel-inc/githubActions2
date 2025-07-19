@@ -5,6 +5,7 @@ on:
     workflows: ["CI - Test and Build"]
     types:
       - completed
+    branches: [develop]
 
 jobs:
   deploy:
