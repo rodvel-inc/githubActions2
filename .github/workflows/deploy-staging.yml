@@ -10,11 +10,11 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Auto-deploy a Staging
-    runs-on: [self-hosted, staging]
+    runs-on: [self-hosted]
 
     steps:
       - name: 📥 Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐳 Login a Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
