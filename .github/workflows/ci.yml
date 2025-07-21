@@ -9,6 +9,7 @@ permissions:
   contents: write # Para que pueda hacer checkout y quizás subir artefactos si se necesita
   packages: write # Para que pueda subir y bajar paquetes de Docker Hub o GitHub Packages
   
+  
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
