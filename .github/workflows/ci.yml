@@ -125,7 +125,8 @@ jobs:
           # Construye la URL de la API para disparar el workflow.
           # ${{ github.repository }} se expande a 'mi-usuario/mi-repositorio'
           # El nombre del archivo del workflow es 'deploy-staging.yml'
-          API_URL="https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-staging/dispatches"
+          # API_URL="https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-staging/dispatches"
+          API_URL="https://api.github.com/repos/rodvel-inc/githubActions2/actions/workflows/deploy-staging/dispatches"
           
           # ${{ github.ref_name }} obtendrá el nombre corto de la rama (ej. 'develop')
           BRANCH_TO_DEPLOY="${{ github.ref_name }}" 
