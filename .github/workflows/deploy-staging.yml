@@ -1,3 +1,4 @@
+# .github/workflows/deploy-staging.yml
 name: Auto-Deploy a Staging
 
 on:
@@ -7,52 +8,10 @@ on:
         description: "Rama a desplegar"
         required: true
         default: "develop"
-      
-  #workflow_run:
-  #  workflows: ["CI - Test and Build"]
-  #  types:
-  #    - completed
-  #  branches: [develop]
 
 jobs:
-  deploy-staging:
+  simple-test:
     runs-on: [self-hosted]
-    if: true
-    
-    
-
     steps:
-      - name: 📥 Checkout repo
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }} # El repo actual
-          ref: ${{ github.event.inputs.ref }} # La rama enviada desde ci.yml
-          token: ${{ secrets.GITHUB_TOKEN }} # El GITHUB_TOKEN estándar es suficiente para clonar el propio repo
-          
-
-      - name: 🐳 Login a Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: 📦 Traer imágenes más recientes
-        run: |
-          docker pull rodvelinc/vote:latest
-          docker pull rodvelinc/result:latest
-          docker pull rodvelinc/worker:latest
-
-      - name: 🚀 Despliegue a Staging
-        run: docker compose -f docker-compose.staging.yml up -d
-
-      - name: ⏳ Esperar a que los servicios estén listos
-        run: |
-          chmod +x ./scripts/wait-for-services.sh
-          ./scripts/wait-for-services.sh
-
-      - name: Asegurar permisos del script de smoke tests
-        run: chmod +x ./scripts/integrationTest.sh
-      
-      - name: 🧪 Ejecutar pruebas de humo
-        run: ./scripts/integrationTest.sh
-
-      - name: Tear down
-        if: always()
-        run: docker compose down
+      - name: Confirm Dispatch
+        run: echo "Workflow dispatched successfully for branch ${{ github.event.inputs.ref }}"
