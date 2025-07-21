@@ -118,14 +118,14 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/result:latest
 
           # --> NUEVO PASO CRUCIAL PARA DISPARAR EL WORKFLOW DEPLOY-STAGING CON EL PAT <--
-      - name: Trigger Deploy Staging Workflow via API
+      - name: Disparar workflow de despliegue a Staging via GitHub API
         # Solo se ejecuta si el job 'docker-build-and-push' es exitoso
         if: success()
         run: |
           # Construye la URL de la API para disparar el workflow.
           # ${{ github.repository }} se expande a 'mi-usuario/mi-repositorio'
           # El nombre del archivo del workflow es 'deploy-staging.yml'
-          API_URL="https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-staging.yml/dispatches"
+          API_URL="https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-staging/dispatches"
           
           # ${{ github.ref_name }} obtendrá el nombre corto de la rama (ej. 'develop')
           BRANCH_TO_DEPLOY="${{ github.ref_name }}" 
