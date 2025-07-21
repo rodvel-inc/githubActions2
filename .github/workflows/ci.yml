@@ -4,10 +4,10 @@ on:
   push:
     branches: [develop]
 
-permissions:
-  actions: write    # Para disparar otros workflows
-  contents: write # Para que pueda hacer checkout y quizás subir artefactos si se necesita
-  packages: write # Para que pueda subir y bajar paquetes de Docker Hub o GitHub Packages
+#permissions:
+#  actions: write    # Para disparar otros workflows
+#  contents: write # Para que pueda hacer checkout y quizás subir artefactos si se necesita
+#  packages: write # Para que pueda subir y bajar paquetes de Docker Hub o GitHub Packages
   
   
 jobs:
