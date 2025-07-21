@@ -2,16 +2,17 @@ name: Auto-Deploy a Staging
 
 on:
   workflow_run:
-    workflows: ["CI - Test and Build"]
+    workflows: [CI - Test and Build]
     types:
       - completed
     branches: [develop]
 
 jobs:
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Auto-Deploy a Staging
+  on-success:
     runs-on: [self-hosted]
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    #name: Auto-Deploy a Staging
+    
 
     steps:
       - name: 📥 Checkout repo
