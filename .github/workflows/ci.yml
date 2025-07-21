@@ -4,6 +4,11 @@ on:
   push:
     branches: [develop]
 
+permissions:
+  contents: write # Para que pueda hacer checkout y quizás subir artefactos si se necesita
+  packages: write # Para que pueda subir y bajar paquetes de Docker Hub o GitHub Packages
+  workflow_run: write # ESTE ES EL PERMISO CLAVE PARA DISPARAR OTROS WORKFLOWS
+
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
