@@ -3,13 +3,12 @@ name: CI - Test and Build
 on:
   push:
     branches: [develop]
+  workflow_dispatch:
 
 permissions:
   actions: write    # Para disparar otros workflows
   contents: write # Para que pueda hacer checkout y quizás subir artefactos si se necesita
-#  packages: write # Para que pueda subir y bajar paquetes de Docker Hub o GitHub Packages
-  
-  
+
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
@@ -117,26 +116,27 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/result:latest -f result/Dockerfile.result.test ./result
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/result:latest
 
-          # --> NUEVO PASO CRUCIAL PARA DISPARAR EL WORKFLOW DEPLOY-STAGING CON EL PAT <--
-      - name: Disparar workflow de despliegue a Staging via GitHub API
-        # Solo se ejecuta si el job 'docker-build-and-push' es exitoso
-        if: success()
-        run: |
-          # Construye la URL de la API para disparar el workflow.
+#          # --> NUEVO PASO CRUCIAL PARA DISPARAR EL WORKFLOW DEPLOY-STAGING CON EL PAT <--
+#      - name: Disparar workflow de despliegue a Staging via GitHub API
+#        # Solo se ejecuta si el job 'docker-build-and-push' es exitoso
+#        if: success()
+#        run: |
+#          # Construye la URL de la API para disparar el workflow.
           # ${{ github.repository }} se expande a 'mi-usuario/mi-repositorio'
           # El nombre del archivo del workflow es 'deploy-staging.yml'
           # API_URL="https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-staging/dispatches"
-          API_URL="https://api.github.com/repos/rodvel-inc/githubActions2/actions/workflows/deploy-staging/dispatches"
+#          API_URL="https://api.github.com/repos/rodvel-inc/githubActions2/actions/workflows/deploy-staging.yml/dispatches"
           
           # ${{ github.ref_name }} obtendrá el nombre corto de la rama (ej. 'develop')
-          BRANCH_TO_DEPLOY="${{ github.ref_name }}" 
+          #BRANCH_TO_DEPLOY="${{ github.ref_name }}" 
+#          BRANCH_TO_DEPLOY="develop"
 
-          echo "Intentando disparar el workflow deploy-staging.yml en la rama $BRANCH_TO_DEPLOY..."
+#          echo "Intentando disparar el workflow deploy-staging.yml en la rama $BRANCH_TO_DEPLOY..."
           
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.GH_PAT_WORKFLOW_TRIGGER }}" \
-            -d "{\"ref\":\"$BRANCH_TO_DEPLOY\"}" \
-            "$API_URL"
+#          curl -X POST \
+#            -H "Accept: application/vnd.github.v3+json" \
+#            -H "Authorization: token ${{ secrets.GH_PAT_WORKFLOW_TRIGGER }}" \
+#            -d "{\"ref\":\"$BRANCH_TO_DEPLOY\"}" \
+#            "$API_URL"
           
-          echo "Comando cURL ejecutado. Por favor, revisa la pestaña 'Actions' para ver una nueva ejecución de Auto-Deploy a Staging."
+#          echo "Comando cURL ejecutado. Por favor, revisa la pestaña 'Actions' para ver una nueva ejecución de Auto-Deploy a Staging."

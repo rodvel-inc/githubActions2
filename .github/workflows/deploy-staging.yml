@@ -2,11 +2,15 @@ name: Auto-Deploy a Staging
 
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: "Rama a desplegar"
-        required: true
-        default: "develop"
+  workflow_run:
+    workflows: ["CI - Test and Build"]
+    types:
+      - completed
+    #inputs:
+    #  ref:
+    #    description: "Rama a desplegar"
+    #    required: true
+    #    default: "develop"
       
   #workflow_run:
   #  workflows: ["CI - Test and Build"]
@@ -17,17 +21,17 @@ on:
 jobs:
   deploy-staging:
     runs-on: [self-hosted]
-    if: true
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
     
 
     steps:
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }} # El repo actual
-          ref: ${{ github.event.inputs.ref }} # La rama enviada desde ci.yml
-          token: ${{ secrets.GITHUB_TOKEN }} # El GITHUB_TOKEN estándar es suficiente para clonar el propio repo
+        #with:
+        #  repository: ${{ github.repository }} # El repo actual
+        #  ref: ${{ github.event.inputs.ref }} # La rama enviada desde ci.yml
+        #  token: ${{ secrets.GITHUB_TOKEN }} # El GITHUB_TOKEN estándar es suficiente para clonar el propio repo
           
 
       - name: 🐳 Login a Docker Hub
