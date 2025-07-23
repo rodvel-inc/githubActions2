@@ -110,7 +110,7 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest -f worker/Dockerfile.worker.test ./worker
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest
 
-      - name: Build & Push Result image (latest)
+      - name: Build & Push container Result image (latest)
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/result:latest -f result/Dockerfile.result.test ./result
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/result:latest
