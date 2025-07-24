@@ -6,7 +6,7 @@
   "author": "roxsross",
   "license": "MIT",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit",
+    "test": "jest --coverage --detectOpenHandles --forceExit", 
     "start": "node main.js",
     "server": "nodemon --env-file=.env main.js"
   },
@@ -28,5 +28,12 @@
     "sinon": "^17.0.1",
     "sinon-chai": "^3.7.0",
     "supertest": "^6.3.4"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!**/tests/**"
+    ]
   }
 }

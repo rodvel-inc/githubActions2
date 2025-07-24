@@ -1,0 +1,43 @@
+name: Deploy a Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    runs-on: [self-hosted, prod]
+    environment:
+      name: production
+      
+    concurrency:
+      group: production-deployment
+      cancel-in-progress: false
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐳 Login a Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      
+      - name: 📦 Traer imágenes más recientes
+        run: |
+          docker pull rodvelinc/vote:latest
+          docker pull rodvelinc/result:latest
+          docker pull rodvelinc/worker:latest
+
+      - name: 🚀 Despliegue a Producción
+        run: docker compose -f docker-compose.prod.yml up -d
+
+      - name: ⏳ Esperar a que los servicios estén listos
+        run: |
+          chmod +x ./scripts/wait-for-services.sh
+          ./scripts/wait-for-services.sh
+
+      - name: 🧪 Ejecutar pruebas de humo
+        run: ./scripts/integrationTest.sh
+
+      - name: ✅ Notificación de despliegue exitoso
+        run: echo "🚀 Deployment a production exitoso."

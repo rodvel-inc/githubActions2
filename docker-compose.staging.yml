@@ -1,14 +1,12 @@
-#version: '3.9'
+#version: "3.9"
 
 services:
   vote:
-    build:
-      context: ./vote
-    container_name: vote
+    image: rodvelinc/vote:latest
+    ports:
+      - "8080:80"
     env_file:
       - ./vote/.env
-    ports:
-      - "8080:80" #Host:container
     depends_on:
       redis:
         condition: service_healthy
@@ -22,15 +20,29 @@ services:
       timeout: 5s
       retries: 5
       start_period: 40s
-      
+
+  result:
+    image: rodvelinc/result:latest
+    ports:
+      - "3010:3010"
+    env_file:
+      - ./result/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - voting-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3010/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
   worker:
-    build:
-      context: ./worker
-    container_name: worker
+    image: rodvelinc/worker:latest
     env_file:
       - ./worker/.env
-    ports:
-    - "3000:3000"  
     depends_on:
       redis:
         condition: service_healthy
@@ -45,25 +57,6 @@ services:
       retries: 10
       start_period: 40s
 
-  result:
-    build:
-      context: ./result
-    container_name: result
-    env_file:
-      - ./result/.env
-    ports:
-      - "3010:3010"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - voting-net
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3010/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
   redis:
     image: redis:7
     container_name: redis
@@ -71,8 +64,8 @@ services:
       - voting-net
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
 
   postgres:
@@ -88,33 +81,30 @@ services:
     networks:
       - voting-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
-
   nginx:
-    image: nginx:alpine
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/vote.conf:ro
-    depends_on:
-      - vote
- 
-    command: /bin/sh -c "rm -f /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    networks:
-      - voting-net
-
+      image: nginx:alpine
+      container_name: nginx
+      ports:
+        - "80:80"
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/vote.conf:ro
+      depends_on:
+        - vote
+      command: /bin/sh -c "rm -f /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+      healthcheck:
+        test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+        interval: 10s
+        timeout: 3s
+        retries: 3
+      networks:
+        - voting-net
 volumes:
   postgres_data:
-
+  
 networks:
   voting-net:
     driver: bridge

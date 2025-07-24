@@ -6,7 +6,7 @@
   "author": "roxsross",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint *.js",
     "start": "node main.js"
   },
@@ -20,5 +20,12 @@
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "supertest": "^6.3.4"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!**/tests/**"
+    ]
   }
 }

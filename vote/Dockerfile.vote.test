@@ -28,9 +28,5 @@ RUN mkdir -p /opt/roxs_voting_app/logs
 RUN touch /opt/roxs_voting_app/logs/vote.log && \
     chmod 644 /opt/roxs_voting_app/logs/vote.log
 
-# Exponer puerto Flask
-EXPOSE 8080
-
 # Entrypoint
 CMD [".venv/bin/flask", "run", "--host=0.0.0.0", "--port=80", "--no-reload"]
-

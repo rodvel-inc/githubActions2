@@ -1,0 +1,26 @@
+Timestamp: 20250714_162207
+
+==================== [LOG: vote] ====================
+
+==================== [LOG: worker] ====================
+
+==================== [LOG: result] ====================
+result  | App running on port 3010
+result  | Connected to db
+result  | Tabla 'votes' asegurada en result
+
+==================== [LOG: nginx] ====================
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: using the "epoll" event method
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: nginx/1.29.0
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: built by gcc 14.2.0 (Alpine 14.2.0) 
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: OS: Linux 5.15.167.4-microsoft-standard-WSL2
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker processes
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 7
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 8
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 9
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 10
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 11
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 12
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 13
+nginx  | 2025/07/14 21:34:24 [notice] 1#1: start worker process 14
