@@ -35,9 +35,12 @@ jobs:
         run: |
           chmod +x ./scripts/wait-for-services.sh
           ./scripts/wait-for-services.sh
+        
+      - name: Asegurar permisos del script de smoke tests
+        run: chmod +x ./scripts/integrationTest.sh
 
       - name: 🧪 Ejecutar pruebas de humo
         run: ./scripts/integrationTest.sh
 
       - name: ✅ Notificación de despliegue exitoso
-        run: echo "🚀 Deployment a production exitoso."
+        run: echo "🚀 Deployment a producción exitoso."
