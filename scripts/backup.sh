@@ -9,4 +9,4 @@ mkdir -p "$BACKUP_PATH"
 
 pg_dump -h postgres -U postgres -F c -f "$BACKUP_PATH/$FILENAME"
 
-echo "✅ Backup creado en: $BACKUP_PATH/$FILENAME"
+echo "✅ Backup creado correctamente en: $BACKUP_PATH/$FILENAME"
