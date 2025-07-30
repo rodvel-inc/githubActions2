@@ -44,3 +44,33 @@ jobs:
 
       - name: ✅ Notificación de despliegue exitoso
         run: echo "🚀 Deployment a producción exitoso."
+      
+      - name: 📣 Notificación en Discord - Deployment exitoso
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_BRANCH: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+      
+          curl -H "Content-Type: application/json" \
+               -X POST $DISCORD_WEBHOOK \
+               -d '{
+                 "username": "Deployment Bot",
+                 "embeds": [{
+                   "title": "✅ Deployment exitoso",
+                   "color": 3066993,
+                   "fields": [
+                     { "name": "Repositorio", "value": "'"$GITHUB_REPO"'", "inline": true },
+                     { "name": "Branch", "value": "'"$GITHUB_BRANCH"'", "inline": true },
+                     { "name": "Autor", "value": "'"$GITHUB_ACTOR"'", "inline": true },
+                     { "name": "Commit", "value": "[`'"${COMMIT_SHA::7}"'`]('"$COMMIT_URL"')", "inline": true },
+                     { "name": "Fecha", "value": "'"$TIMESTAMP"'" }
+                   ]
+                 }]
+               }'
+
